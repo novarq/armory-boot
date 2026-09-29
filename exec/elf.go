@@ -60,7 +60,9 @@ func (image *ELFImage) Load() (err error) {
 			return fmt.Errorf("incompatible memory layout (paddr:%x off:%x)", prg.Paddr, off)
 		}
 
-		image.Region.Write(image.Region.Start(), int(off), b)
+		if err = writeELFSegment(image.Region, int(off), b); err != nil {
+			return
+		}
 	}
 
 	image.entry = uint(f.Entry)
